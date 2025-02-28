@@ -2,6 +2,8 @@ flask
 gradio
 google-generativeai
 python-dotenv
+gunicorn
 flask==3.0.0
 google-generativeai==0.7.0
 python-dotenv==1.0.0
+gunicorn==23.0.0 
