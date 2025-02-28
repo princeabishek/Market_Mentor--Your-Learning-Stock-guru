@@ -1,0 +1,651 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Body */
+body {
+    background: linear-gradient(135deg, #0A0F2D 0%, #1A1E4A 100%);
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Navbar (for index.html, signin.html, signup.html) */
+.navbar {
+    padding: 1px 2px;
+   
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 15px rgba(0, 212, 255, 0.1);
+    backdrop-filter: blur(0px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    margin-left: 20px; /* Push logo to top-left */
+}
+
+.logo-img {
+    width: 100px; /* Standard size for navbar */
+    transition: transform 0.3s ease;
+}
+
+.logo-img:hover {
+    transform: scale(1.05);
+}
+
+.nav-buttons {
+    list-style: none;
+    display: flex;
+    margin-right: 20px; /* Push buttons to top-right */
+}
+
+.nav-buttons li {
+    margin-left: 15px;
+}
+
+.nav-buttons .btn {
+    padding: 10px 20px;
+    background: linear-gradient(90deg, #00D4FF, #7B00FF);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nav-buttons .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+}
+
+.nav-buttons .btn.active {
+    background: linear-gradient(90deg, #007BFF, #4B0082); /* Slightly darker for active state */
+}
+
+/* Sidebar (for dashboard.html) */
+.sidebar {
+    width: 250px;
+    background: rgba(10, 15, 45, 0.9);
+    padding: 20px;
+    height: 100vh;
+    position: fixed;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
+    backdrop-filter: blur(5px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.logout-btn {
+    color: #17d12d;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 10px 15px;
+    background: linear-gradient(90deg, rgba(0, 212, 255, 0.1), rgba(123, 0, 255, 0.1));
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    align-self: flex-end; /* Positions it in the top-right corner of sidebar */
+    margin-top: 10px;
+}
+
+.logout-btn:hover {
+    background: linear-gradient(90deg, #00D4FF, #7B00FF);
+    color: #fff;
+    box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+}
+
+.logo-img {
+    width: 100px; /* Standard size for sidebar */
+    display: block;
+    margin: 0 auto 20px;
+    transition: transform 0.3s ease;
+}
+
+.logo-img:hover {
+    transform: scale(1.05);
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Allows nav to push logout to the top */
+}
+
+.sidebar-nav a {
+    color: #00D4FF;
+    text-decoration: none;
+    padding: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.sidebar-nav a i {
+    margin-right: 10px;
+}
+
+.sidebar-nav a:hover, .sidebar-nav a.active {
+    background: linear-gradient(90deg, #00D4FF, #7B00FF);
+    color: #fff;
+    border-radius: 10px;
+}
+
+/* Main Content (for dashboard.html) */
+.main-content {
+    flex: 1;
+    margin-left: 250px;
+    padding: 20px;
+}
+
+/* Hero Section (for index.html) */
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, rgba(0, 212, 255, 0.1), rgba(123, 0, 255, 0.1));
+    text-align: center;
+    padding-top: 60px; /* Offset for fixed navbar */
+}
+
+.hero-content h1 {
+    font-size: 3.5em;
+    background: linear-gradient(90deg, #00D4FF, #7B00FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 20px;
+    animation: fadeIn 1s ease;
+}
+
+.hero-content p {
+    font-size: 1.2em;
+    color: #D0D4FF;
+    margin-bottom: 30px;
+}
+
+.cta-btn {
+    padding: 15px 35px;
+    background: linear-gradient(90deg, #00D4FF, #7B00FF);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 30px;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cta-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 212, 255, 0.5);
+}
+
+/* Features Section (for index.html) */
+.features {
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.features-title {
+    font-size: 2em;
+    background: linear-gradient(90deg, #00D4FF, #7B00FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 40px;
+    animation: fadeIn 1s ease 0.5s backwards;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.feature-box {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: slideIn 0.5s ease backwards;
+}
+
+.feature-box:nth-child(1) { animation-delay: 0.1s; }
+.feature-box:nth-child(2) { animation-delay: 0.2s; }
+.feature-box:nth-child(3) { animation-delay: 0.3s; }
+.feature-box:nth-child(4) { animation-delay: 0.4s; }
+
+.feature-box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3);
+}
+
+.feature-box i {
+    font-size: 2.5em;
+    color: #00D4FF;
+    margin-bottom: 20px;
+    transition: color 0.3s ease;
+}
+
+.feature-box:hover i {
+    color: #7B00FF;
+}
+
+.feature-box h3 {
+    font-size: 1.5em;
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+.feature-box p {
+    font-size: 1em;
+    color: #D0D4FF;
+}
+
+/* Dashboard Header (for dashboard.html) */
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.dashboard-header h1 {
+    font-size: 2.5em;
+    background: linear-gradient(90deg, #00D4FF, #7B00FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: fadeIn 1s ease;
+}
+
+.dashboard-header p {
+    font-size: 1.2em;
+    color: #D0D4FF;
+}
+
+/* Dashboard Sections (for dashboard.html) */
+.dashboard-sections {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: slideIn 0.5s ease backwards;
+    text-align: center;
+}
+
+.section-card:nth-child(1) { animation-delay: 0.1s; }
+.section-card:nth-child(2) { animation-delay: 0.2s; }
+.section-card:nth-child(3) { animation-delay: 0.3s; }
+.section-card:nth-child(4) { animation-delay: 0.4s; }
+
+.section-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3);
+}
+
+.section-icon i {
+    font-size: 2.5em;
+    color: #00D4FF;
+    margin-bottom: 20px;
+    transition: color 0.3s ease;
+}
+
+.section-card:hover .section-icon i {
+    color: #7B00FF;
+}
+
+.section-card h3 {
+    font-size: 1.5em;
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+.section-card p {
+    font-size: 1em;
+    color: #D0D4FF;
+    margin-bottom: 20px;
+}
+
+.section-card .btn {
+    display: inline-block;
+    padding: 10px 20px;
+}
+
+/* Authentication Pages (Sign In / Sign Up) */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(135deg, #0A0F2D 0%, #1A1E4A 100%);
+    padding-top: 60px; /* Offset for navbar */
+}
+
+.form-box {
+    max-width: 400px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
+    backdrop-filter: blur(10px);
+    margin-top: 20px;
+    animation: fadeIn 1s ease;
+}
+
+.form-box h2 {
+    font-size: 2.5em;
+    background: linear-gradient(90deg, #00D4FF, #7B00FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 1em;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.password-toggle {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.password-toggle input {
+    margin-right: 5px;
+}
+
+.toggle-password {
+    color: #D0D4FF;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.toggle-password:hover {
+    color: #00D4FF;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(90deg, #00D4FF, #7B00FF);
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+}
+
+.alert {
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.alert-danger {
+    background: rgba(255, 75, 75, 0.8);
+    color: #fff;
+}
+
+.alert-success {
+    background: rgba(0, 212, 255, 0.8);
+    color: #fff;
+}
+
+.form-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.form-footer p {
+    color: #D0D4FF;
+    font-size: 0.9em;
+}
+
+.link {
+    color: #00D4FF;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.link:hover {
+    color: #7B00FF;
+}
+
+/* Chatbot Page (for chatbot.html) */
+#chat-container {
+    max-width: 900px;
+    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+#chat-container h1 {
+    font-size: 2.5em;
+    background: linear-gradient(90deg, #00D4FF, #7B00FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#chat-container h3 {
+    font-size: 1.2em;
+    color: #00D4FF;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#chat-history {
+    height: 400px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    margin-bottom: 20px;
+}
+
+.message {
+    max-width: 80%;
+    margin: 10px 0;
+    padding: 12px 18px;
+    border-radius: 10px;
+    animation: slideIn 0.3s ease;
+}
+
+.user-message {
+    background: linear-gradient(135deg, #00D4FF, #007BFF);
+    margin-left: auto;
+    color: #fff;
+}
+
+.bot-message {
+    background: linear-gradient(135deg, #7B00FF, #4B0082);
+    color: #fff;
+}
+
+#chat-input {
+    width: 70%;
+    padding: 12px;
+    border: none;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+#chat-input:focus {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(90deg, #00D4FF, #7B00FF);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-left: 10px;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+}
+
+/* Stock Trends Page (for stock_trends.html) */
+#trends-container {
+    max-width: 900px;
+    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+#trends-container h1 {
+    font-size: 2.5em;
+    background: linear-gradient(90deg, #00D4FF, #7B00FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#trends-container h3 {
+    font-size: 1.2em;
+    color: #00D4FF;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#news-feed {
+    height: 400px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    margin-bottom: 20px;
+}
+
+.news-item {
+    background: linear-gradient(135deg, #00D4FF, #007BFF);
+    border-radius: 10px;
+    padding: 12px;
+    margin: 10px 0;
+    animation: fadeIn 0.5s ease;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    background: rgba(10, 15, 45, 0.9);
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+footer p {
+    font-size: 0.9em;
+    color: #00D4FF;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar { flex-direction: column; padding: 10px; }
+    .logo { margin: 10px 0; }
+    .nav-buttons { margin-right: 0; flex-direction: column; align-items: flex-end; }
+    .nav-buttons li { margin: 10px 0; }
+    .hero { height: 80vh; }
+    .hero-content h1 { font-size: 2.5em; }
+    .hero-content p { font-size: 1em; }
+    .feature-grid, .dashboard-sections { grid-template-columns: 1fr; }
+    .sidebar { width: 200px; }
+    .main-content { margin-left: 200px; }
+    .form-box { margin: 20px; }
+}
+
+@media (max-width: 480px) {
+    .sidebar { width: 100%; height: auto; position: relative; }
+    .main-content { margin-left: 0; }
+    .navbar { flex-direction: column; }
+    .logo-img { width: 80px; } /* Further reduce for mobile navbar */
+    .nav-buttons { align-items: center; }
+    .nav-buttons li { margin: 5px 0; }
+    .form-box {
+        padding: 20px;
+        margin: 20px;
+    }
+    .form-box h2 { font-size: 2em; }
+    .submit-btn { font-size: 1em; }
+}

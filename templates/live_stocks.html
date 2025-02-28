@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Mentor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #6366f1;
+        }
+
+        body {
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+
+        .dark-mode .stock-card {
+            background-color: #2d2d2d;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .dark-mode .price-card {
+            background-color: #363636;
+        }
+
+        .stock-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .stock-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .price-card {
+            background-color: #f9fafb;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .up-trend { 
+            color: #10b981;
+            animation: pulse-green 1s;
+        }
+
+        .down-trend { 
+            color: #ef4444;
+            animation: pulse-red 1s;
+        }
+
+        .stock-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .company-logo {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .price-change-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        @keyframes pulse-green {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes pulse-red {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .market-status {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .market-status .pulse {
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.5; }
+            100% { transform: scale(0.95); opacity: 1; }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <button class="theme-toggle bg-gray-800 text-white dark:bg-white dark:text-gray-800" onclick="toggleTheme()">
+        <i class="fas fa-moon dark:fa-sun"></i>
+    </button>
+
+    <div class="container mx-auto p-4">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-transparent bg-clip-text">
+                Market Mentor
+            </h1>
+            <div class="market-status">
+                <div class="pulse"></div>
+                <span>Market is Live</span>
+                <span id="current-time" class="ml-2"></span>
+            </div>
+        </header>
+
+        <div class="stock-grid" id="stockGrid"></div>
+    </div>
+
+    <script>
+        const companies = [
+            { symbol: 'RELIANCE', name: 'Reliance Industries', basePrice: 2456.75, sector: 'Energy' },
+            { symbol: 'TCS', name: 'Tata Consultancy Services', basePrice: 3789.50, sector: 'IT' },
+            { symbol: 'HDFC', name: 'HDFC Bank', basePrice: 1678.25, sector: 'Banking' },
+            { symbol: 'INFY', name: 'Infosys', basePrice: 1434.60, sector: 'IT' },
+            { symbol: 'ITC', name: 'ITC Limited', basePrice: 389.45, sector: 'FMCG' },
+            { symbol: 'WIPRO', name: 'Wipro Limited', basePrice: 456.70, sector: 'IT' },
+            { symbol: 'BHARTIARTL', name: 'Bharti Airtel', basePrice: 867.30, sector: 'Telecom' },
+            { symbol: 'LT', name: 'Larsen & Toubro', basePrice: 2789.15, sector: 'Engineering' },
+            { symbol: 'HCLTECH', name: 'HCL Technologies', basePrice: 1234.55, sector: 'IT' },
+            { symbol: 'TATAMOTORS', name: 'Tata Motors', basePrice: 567.80, sector: 'Automotive' }
+        ];
+
+        function createStockCards() {
+            const stockGrid = document.getElementById('stockGrid');
+            
+            companies.forEach(company => {
+                const card = document.createElement('div');
+                card.className = 'stock-card';
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="company-logo">
+                                ${company.symbol.slice(0, 2)}
+                            </div>
+                            <div>
+                                <div class="text-xl font-bold">${company.symbol}</div>
+                                <div class="text-sm text-gray-500">${company.name}</div>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full">
+                            ${company.sector}
+                        </span>
+                    </div>
+                    
+                    <div class="price-card flex justify-between items-center mb-4">
+                        <div>
+                            <div class="text-sm text-gray-500">Current Price</div>
+                            <div class="text-2xl font-bold" id="currentPrice_${company.symbol}">Rs. ${company.basePrice}</div>
+                        </div>
+                        <div id="priceChange_${company.symbol}" class="price-change-badge">
+                            +0.00%
+                        </div>
+                    </div>
+
+                    <div class="stats-grid mb-4">
+                        <div class="price-card">
+                            <div class="text-sm text-gray-500">Yesterday's Close</div>
+                            <div class="text-md font-bold" id="yesterdayClose_${company.symbol}">Rs. ${(company.basePrice * 0.995).toFixed(2)}</div>
+                        </div>
+                        <div class="price-card">
+                            <div class="text-sm text-gray-500">Day's High</div>
+                            <div class="text-md font-bold" id="dayHigh_${company.symbol}">Rs. ${company.basePrice}</div>
+                        </div>
+                    </div>
+
+                    <div class="border-t pt-4">
+                        <div class="text-sm text-gray-500 mb-2">Recent Updates</div>
+                        <div class="grid grid-cols-2 gap-2" id="history_${company.symbol}"></div>
+                    </div>
+                `;
+                stockGrid.appendChild(card);
+            });
+        }
+
+        function updatePrices() {
+            companies.forEach(company => {
+                const currentPriceElement = document.getElementById(`currentPrice_${company.symbol}`);
+                const currentPrice = parseFloat(currentPriceElement.textContent.replace('Rs. ', ''));
+                
+                const randomChange = currentPrice * (Math.random() * 0.02 - 0.01);
+                const newPrice = currentPrice + randomChange;
+                
+                currentPriceElement.textContent = `Rs. ${newPrice.toFixed(2)}`;
+                
+                const yesterdayClose = parseFloat(document.getElementById(`yesterdayClose_${company.symbol}`).textContent.replace('Rs. ', ''));
+                const changePercent = ((newPrice - yesterdayClose) / yesterdayClose * 100).toFixed(2);
+                const priceChangeElement = document.getElementById(`priceChange_${company.symbol}`);
+                
+                priceChangeElement.textContent = `${changePercent >= 0 ? '↑' : '↓'} ${Math.abs(changePercent)}%`;
+                priceChangeElement.className = `price-change-badge ${changePercent >= 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
+                
+                const dayHighElement = document.getElementById(`dayHigh_${company.symbol}`);
+                const dayHigh = parseFloat(dayHighElement.textContent.replace('Rs. ', ''));
+                if (newPrice > dayHigh) {
+                    dayHighElement.textContent = `Rs. ${newPrice.toFixed(2)}`;
+                }
+                
+                const historyContainer = document.getElementById(`history_${company.symbol}`);
+                const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                
+                const historyEntry = document.createElement('div');
+                historyEntry.className = 'price-card text-center';
+                historyEntry.innerHTML = `
+                    <div class="text-xs text-gray-500">${time}</div>
+                    <div class="text-sm font-medium">Rs. ${newPrice.toFixed(2)}</div>
+                `;
+                
+                while (historyContainer.children.length >= 2) {
+                    historyContainer.removeChild(historyContainer.firstChild);
+                }
+                historyContainer.appendChild(historyEntry);
+            });
+        }
+
+        function updateTime() {
+            const timeElement = document.getElementById('current-time');
+            const now = new Date();
+            timeElement.textContent = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit' 
+            });
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        // Initialize
+        createStockCards();
+        setInterval(updatePrices, 5000);
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+</body>
+</html>

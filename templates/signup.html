@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Market Mentor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="auth-container">
+        <nav class="navbar">
+            <div class="logo">
+                <a href="{{ url_for('index') }}">
+                    <img src="{{ url_for('static', filename='images/market mentor.png') }}" alt="Market Mentor Logo" class="logo-img">
+                </a>
+            </div>
+            <ul class="nav-buttons">
+                <li><a href="{{ url_for('signin') }}" class="btn">Sign In</a></li>
+                <li><a href="{{ url_for('signup') }}" class="btn active">Sign Up</a></li>
+            </ul>
+        </nav>
+        <div class="form-box">
+            <h2>Sign Up</h2>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <form action="{{ url_for('signup') }}" method="POST">
+                <div class="input-group">
+                    <input type="email" name="email" placeholder="Email Address" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password" id="password" placeholder="Password" required>
+                    <div class="password-toggle">
+                        <input type="checkbox" id="show-password">
+                        <label for="show-password" class="toggle-password">Show Password</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn submit-btn">Sign Up</button>
+            </form>
+            <div class="form-footer">
+                <p>Already have an account? <a href="{{ url_for('signin') }}" class="link">Sign In</a></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('show-password').addEventListener('change', function () {
+            const passwordField = document.getElementById('password');
+            passwordField.type = this.checked ? 'text' : 'password';
+        });
+    </script>
+</body>
+</html>

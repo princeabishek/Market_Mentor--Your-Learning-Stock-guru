@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Mentor - Your Stock Market Guide</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='images/market mentor.png') }}" alt="Market Mentor Logo" class="logo-img">
+            </a>
+        </div>
+        <ul class="nav-buttons">
+            <li><a href="{{ url_for('signin') }}" class="btn">Sign In</a></li>
+            <li><a href="{{ url_for('signup') }}" class="btn">Sign Up</a></li>
+        </ul>
+    </nav>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Empower Your Investment Journey</h1>
+            <p>Track live stocks, build portfolios, and master the market with cutting-edge tools.</p>
+            <a href="#features" class="cta-btn">Get Started</a>
+        </div>
+    </section>
+    <section id="features" class="features">
+        <h2 class="features-title">Why Market Mentor?</h2>
+        <div class="feature-grid">
+            <div class="feature-box">
+                <i class="fas fa-chart-line"></i>
+                <h3>Live Stocks</h3>
+                <p>Access real-time stock prices and trends to make informed decisions.</p>
+            </div>
+            <div class="feature-box">
+                <i class="fas fa-briefcase"></i>
+                <h3>Model Portfolio</h3>
+                <p>Practice with virtual portfolios and learn the art of investing.</p>
+            </div>
+            <div class="feature-box">
+                <i class="fas fa-bullhorn"></i>
+                <h3>Trending News</h3>
+                <p>Stay updated with the latest news and market insights.</p>
+            </div>
+            <div class="feature-box">
+                <i class="fas fa-comments"></i>
+                <h3>Interactive Chatbot</h3>
+                <p>Get instant answers to your stock market queries with our AI-powered bot.</p>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <p>© 2025 Market Mentor. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

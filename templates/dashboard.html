@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Mentor - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="{{ url_for('index') }}" class="logo">
+                <img src="{{ url_for('static', filename='images/market mentor.png') }}" alt="Market Mentor Logo" class="logo-img">
+            </a>
+            <ul>
+                <li><a href="{{ url_for('index') }}" class="btn">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+    <header class="dashboard-header">
+        <h1>Welcome to Your Dashboard</h1>
+        <p>Select a section to explore detailed features.</p>
+    </header>
+    <section class="dashboard-sections">
+        <div class="section-card">
+            <div class="section-icon">
+                <i class="fas fa-briefcase"></i>
+            </div>
+            <h3>Model Portfolio</h3>
+            <p>Practice building and managing portfolios with expert simulations.</p>
+            <a href="{{ url_for('stock_tracker') }}" class="btn">Go to Model Portfolio</a>
+        </div>
+        <div class="section-card">
+            <div class="section-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>Live Stocks</h3>
+            <p>Get real-time stock prices and market updates.</p>
+            <a href="{{ url_for('live_stocks') }}" class="btn">View Live Stocks</a>
+        </div>
+        <div class="section-card">
+            <div class="section-icon">
+                <i class="fas fa-newspaper"></i>
+            </div>
+            <h3>Stock Trends</h3>
+            <p>Explore trending news and insights shaping the market.</p>
+            <a href="{{ url_for('stock_trends') }}" class="btn">Check Stock Trends</a>
+        </div>
+        <div class="section-card">
+            <div class="section-icon">
+                <i class="fas fa-comments"></i>
+            </div>
+            <h3>Chatbot</h3>
+            <p>Ask your stock-related queries and get instant guidance.</p>
+            <a href="{{ url_for('chatbot') }}" class="btn">Open Chatbot</a>
+        </div>
+    </section>
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Market Mentor. All Rights Reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Portfolio Tracker</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-4">
+        <!-- Portfolio Summary -->
+        <div class="bg-white rounded-lg shadow p-4 mb-4">
+            <h1 class="text-2xl font-bold mb-4">My Portfolio</h1>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="p-3 bg-gray-50 rounded-lg">
+                    <p class="text-gray-600">Available Cash</p>
+                    <p class="text-xl font-bold" id="availableCash">₹100,000</p>
+                </div>
+                <div class="p-3 bg-gray-50 rounded-lg">
+                    <p class="text-gray-600">Total Value</p>
+                    <p class="text-xl font-bold" id="totalValue">₹100,000</p>
+                </div>
+                <div class="p-3 bg-gray-50 rounded-lg">
+                    <p class="text-gray-600">P&L</p>
+                    <p class="text-xl font-bold" id="profitLoss">₹0</p>
+                </div>
+                <div class="p-3 bg-gray-50 rounded-lg">
+                    <p class="text-gray-600">Time Elapsed</p>
+                    <p class="text-xl font-bold" id="timeElapsed">0 min</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Holdings -->
+        <div class="bg-white rounded-lg shadow p-4 mb-4">
+            <h2 class="text-xl font-bold mb-3">Current Holdings</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full" id="holdingsTable">
+                    <thead>
+                        <tr class="text-left border-b">
+                            <th class="p-2">Stock</th>
+                            <th class="p-2">Quantity</th>
+                            <th class="p-2">Avg Price</th>
+                            <th class="p-2">Current Price</th>
+                            <th class="p-2">P&L</th>
+                        </tr>
+                    </thead>
+                    <tbody id="holdingsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Stock List -->
+        <div class="bg-white rounded-lg shadow p-4">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Available Stocks</h2>
+                <div class="flex items-center space-x-2">
+                    <label class="text-sm text-gray-600">Quantity:</label>
+                    <input type="number" min="1" value="1" id="quantityInput" class="w-20 p-1 border rounded">
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="stockList"></div>
+        </div>
+    </div>
+
+    <script>
+        // Portfolio state
+        const state = {
+            initialCash: 100000,
+            availableCash: 100000,
+            totalValue: 100000,
+            profitLoss: 0,
+            holdings: [],
+            stocks: [
+                { symbol: 'RELIANCE', price: 2500, prevPrice: 2500, change: 0 },
+                { symbol: 'TCS', price: 3200, prevPrice: 3200, change: 0 },
+                { symbol: 'HDFC', price: 1400, prevPrice: 1400, change: 0 },
+                { symbol: 'INFY', price: 1300, prevPrice: 1300, change: 0 },
+                { symbol: 'ITC', price: 250, prevPrice: 250, change: 0 },
+                { symbol: 'WIPRO', price: 400, prevPrice: 400, change: 0 },
+                { symbol: 'AIRTEL', price: 700, prevPrice: 700, change: 0 },
+                { symbol: 'LT', price: 2000, prevPrice: 2000, change: 0 },
+                { symbol: 'HCLTECH', price: 1100, prevPrice: 1100, change: 0 },
+                { symbol: 'TATAMOTORS', price: 600, prevPrice: 600, change: 0 }
+            ],
+            elapsedMinutes: 0
+        };
+
+        // Update UI functions
+        function updatePortfolioUI() {
+            document.getElementById('availableCash').textContent = `₹${state.availableCash.toLocaleString()}`;
+            document.getElementById('totalValue').textContent = `₹${state.totalValue.toLocaleString()}`;
+            document.getElementById('profitLoss').textContent = `₹${state.profitLoss.toLocaleString()}`;
+            document.getElementById('timeElapsed').textContent = `${state.elapsedMinutes} min`;
+            
+            const profitLossElement = document.getElementById('profitLoss');
+            profitLossElement.className = `text-xl font-bold ${state.profitLoss >= 0 ? 'text-green-600' : 'text-red-600'}`;
+        }
+
+        function updateHoldingsUI() {
+            const holdingsBody = document.getElementById('holdingsBody');
+            holdingsBody.innerHTML = '';
+
+            state.holdings.forEach(holding => {
+                const currentStock = state.stocks.find(s => s.symbol === holding.symbol);
+                const profitLoss = (currentStock.price - holding.avgPrice) * holding.quantity;
+
+                const row = document.createElement('tr');
+                row.className = 'border-b';
+                row.innerHTML = `
+                    <td class="p-2">${holding.symbol}</td>
+                    <td class="p-2">${holding.quantity}</td>
+                    <td class="p-2">₹${holding.avgPrice.toFixed(2)}</td>
+                    <td class="p-2">₹${currentStock.price.toFixed(2)}</td>
+                    <td class="p-2 ${profitLoss >= 0 ? 'text-green-600' : 'text-red-600'}">
+                        ₹${profitLoss.toFixed(2)}
+                    </td>
+                `;
+                holdingsBody.appendChild(row);
+            });
+        }
+
+        function updateStockListUI() {
+            const stockList = document.getElementById('stockList');
+            stockList.innerHTML = '';
+
+            state.stocks.forEach(stock => {
+                const stockCard = document.createElement('div');
+                stockCard.className = 'border rounded-lg p-4';
+                stockCard.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h3 class="font-bold">${stock.symbol}</h3>
+                            <p class="text-xl">₹${stock.price.toFixed(2)}</p>
+                        </div>
+                        <div class="px-2 py-1 rounded ${stock.change >= 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                            ${stock.change >= 0 ? '+' : ''}${stock.change.toFixed(2)}%
+                        </div>
+                    </div>
+                    <div class="flex space-x-2 mt-4">
+                        <button onclick="buyStock('${stock.symbol}')"
+                            class="flex-1 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
+                            Buy
+                        </button>
+                        <button onclick="sellStock('${stock.symbol}')"
+                            class="flex-1 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">
+                            Sell
+                        </button>
+                    </div>
+                `;
+                stockList.appendChild(stockCard);
+            });
+        }
+
+        // Trading functions
+        function buyStock(symbol) {
+            const quantity = parseInt(document.getElementById('quantityInput').value);
+            const stock = state.stocks.find(s => s.symbol === symbol);
+            const totalCost = stock.price * quantity;
+
+            if (totalCost > state.availableCash) {
+                alert('Insufficient funds!');
+                return;
+            }
+
+            const existingHolding = state.holdings.find(h => h.symbol === symbol);
+            if (existingHolding) {
+                existingHolding.quantity += quantity;
+                existingHolding.avgPrice = ((existingHolding.avgPrice * (existingHolding.quantity - quantity)) + (stock.price * quantity)) / existingHolding.quantity;
+            } else {
+                state.holdings.push({
+                    symbol,
+                    quantity,
+                    avgPrice: stock.price
+                });
+            }
+
+            state.availableCash -= totalCost;
+            updatePortfolio();
+        }
+
+        function sellStock(symbol) {
+            const quantity = parseInt(document.getElementById('quantityInput').value);
+            const holding = state.holdings.find(h => h.symbol === symbol);
+            
+            if (!holding || holding.quantity < quantity) {
+                alert('Insufficient stocks to sell!');
+                return;
+            }
+
+            const stock = state.stocks.find(s => s.symbol === symbol);
+            const saleValue = stock.price * quantity;
+
+            holding.quantity -= quantity;
+            if (holding.quantity === 0) {
+                state.holdings = state.holdings.filter(h => h.symbol !== symbol);
+            }
+
+            state.availableCash += saleValue;
+            updatePortfolio();
+        }
+
+        // Update portfolio values
+        function updatePortfolio() {
+            const holdingsValue = state.holdings.reduce((total, holding) => {
+                const currentStock = state.stocks.find(s => s.symbol === holding.symbol);
+                return total + (currentStock.price * holding.quantity);
+            }, 0);
+
+            state.totalValue = state.availableCash + holdingsValue;
+            state.profitLoss = state.totalValue - state.initialCash;
+
+            updatePortfolioUI();
+            updateHoldingsUI();
+        }
+
+        // Simulate price movements
+        function updatePrices() {
+            state.stocks.forEach(stock => {
+                const volatility = (Math.random() - 0.5) * 0.02; // 2% max movement
+                stock.prevPrice = stock.price;
+                stock.price = Math.max(stock.price * (1 + volatility), 0.01);
+                stock.change = ((stock.price - stock.prevPrice) / stock.prevPrice) * 100;
+            });
+
+            state.elapsedMinutes += 2;
+            updatePortfolio();
+            updateStockListUI();
+        }
+
+        // Initialize
+        updatePortfolioUI();
+        updateStockListUI();
+
+        // Start price updates
+        setInterval(updatePrices, 2000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Trends - Market Mentor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #0A0F2D 0%, #1A1E4A 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        #trends-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            font-size: 2.5em;
+            background: linear-gradient(90deg, #00D4FF, #7B00FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        h3 {
+            font-size: 1.2em;
+            color: #00D4FF;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #news-feed {
+            height: 400px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            margin-bottom: 20px;
+        }
+        .news-item {
+            background: linear-gradient(135deg, #00D4FF, #007BFF);
+            border-radius: 10px;
+            padding: 12px;
+            margin: 10px 0;
+            animation: fadeIn 0.5s ease;
+        }
+        button {
+            display: block;
+            width: 200px;
+            margin: 0 auto;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(90deg, #00D4FF, #7B00FF);
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div id="trends-container">
+        <h1>Stock Trends</h1>
+        <h3>Real-Time Indian Market Updates</h3>
+        <div id="news-feed"></div>
+        <button onclick="fetchNews()">Refresh News</button>
+    </div>
+
+    <script>
+        const ALPHA_VANTAGE_API_KEY = "3MJOSDFHHWUDVPTI";  // Replace with your Alpha Vantage API key
+        const ALPHA_VANTAGE_URL = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=Indian%20Stock%20Market&apikey=${ALPHA_VANTAGE_API_KEY}`;
+
+        async function fetchNews() {
+            const newsFeed = document.getElementById('news-feed');
+            newsFeed.innerHTML = 'Loading news...';
+
+            try {
+                const response = await fetch(ALPHA_VANTAGE_URL);
+                if (!response.ok) throw new Error(`Alpha Vantage error: ${response.status}`);
+
+                const data = await response.json();
+                console.log("News data:", data);
+
+                if (!data.feed) throw new Error(data.Information || "No news data available");
+
+                newsFeed.innerHTML = '';
+                const articles = data.feed.slice(0, 10);
+                articles.forEach(article => {
+                    const div = document.createElement('div');
+                    div.className = 'news-item';
+                    const time = new Date(article.time_published).toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata' });
+                    div.textContent = `${article.title} - ${time} IST (Source: ${article.source})`;
+                    newsFeed.appendChild(div);
+                });
+                newsFeed.scrollTop = newsFeed.scrollHeight;
+            } catch (error) {
+                console.error("Fetch error:", error);
+                newsFeed.innerHTML = `Error: ${error.message}`;
+            }
+        }
+
+        fetchNews();
+        setInterval(fetchNews, 300000);  // 5-minute refresh
+    </script>
+</body>
+</html>

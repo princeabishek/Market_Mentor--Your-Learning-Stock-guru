@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot - Market Mentor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0A0F2D 0%, #1A1E4A 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        #chat-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            background: linear-gradient(90deg, #00D4FF, #7B00FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 1.2em;
+            color: #00D4FF;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #chat-history {
+            height: 400px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .message {
+            max-width: 80%;
+            margin: 10px 0;
+            padding: 12px 18px;
+            border-radius: 10px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .user-message {
+            background: linear-gradient(135deg, #00D4FF, #007BFF);
+            margin-left: auto;
+            color: #fff;
+        }
+
+        .bot-message {
+            background: linear-gradient(135deg, #7B00FF, #4B0082);
+            color: #fff;
+        }
+
+        #chat-input {
+            width: 70%;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        #chat-input:focus {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(90deg, #00D4FF, #7B00FF);
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-left: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="chat-container">
+        <h1>Market Mentor</h1>
+        <h3>Chat with Sage - Your Stock Market Guru</h3>
+        <div id="chat-history"></div>
+        <input type="text" id="chat-input" placeholder="Ask about the stock market...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        const API_KEY = "AIzaSyARzc1Rb5DouM15ErJUb8PeDWniQ5SEj3U";  // Replace with your Gemini API key
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${API_KEY}`;
+        let chatHistory = [];
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            appendMessage('user', message);
+
+            try {
+                const prompt = `
+                You are an expert stock market tutor named Sage whose job is to educate people on the stock market.
+                If the user asks anything not stock market related, politely decline.
+                Otherwise, answer the question and keep your answers concise and precise.
+                Note: I cannot provide live stock market prices or current updates as I don’t have real-time data access.
+                `;
+
+                const historyForAPI = [
+                    { "role": "user", "parts": [{ "text": prompt }] },
+                    ...chatHistory.flatMap(([userMsg, botMsg]) => [
+                        { "role": "user", "parts": [{ "text": userMsg }] },
+                        { "role": "model", "parts": [{ "text": botMsg }] }
+                    ]),
+                    { "role": "user", "parts": [{ "text": message }] }
+                ];
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ "contents": historyForAPI })
+                });
+
+                if (!response.ok) throw new Error(`Server error: ${response.status}`);
+                const data = await response.json();
+                const botResponse = data.candidates[0].content.parts[0].text;
+                appendMessage('bot', botResponse);
+                chatHistory.push([message, botResponse]);
+            } catch (error) {
+                console.error("Fetch error:", error);
+                appendMessage('bot', `Error: ${error.message}`);
+            }
+
+            input.value = '';
+        }
+
+        function appendMessage(sender, text) {
+            const historyDiv = document.getElementById('chat-history');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.textContent = text;
+            historyDiv.appendChild(messageDiv);
+            historyDiv.scrollTop = historyDiv.scrollHeight;
+        }
+
+        document.getElementById('chat-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+
+</html>
